@@ -1,0 +1,20 @@
+body{
+    background-color: #fde8af;
+}
+.thead {
+    background-color: rgb(241, 111, 3);
+}
+.content {
+    margin-top: 2%;
+    margin-bottom: 3%;
+}
+
+.form{
+    background-color: rgb(241, 111, 3);
+    padding: 10px;
+    box-shadow: 2px black;
+}
+
+.form h1 {
+    border-bottom: 1px solid white;
+}
