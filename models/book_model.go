@@ -1,7 +1,7 @@
 package models
 
 import (
-	"https://github.com/huutien2801/shop-system/entities"
+	"github.com/huutien2801/shop-system/entities"
 
 	"gopkg.in/mgo.v2/bson"
 

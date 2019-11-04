@@ -1,13 +1,14 @@
 package routes
 
 import (
-	 "https://github.com/huutien2801/shop-system/config"
-	 "https://github.com/huutien2801/shop-system/entities"
-	 "https://github.com/huutien2801/shop-system/models"
-	 "https://github.com/huutien2801/shop-system/utils"
 	"encoding/json"
 	"net/http"
 	"strconv"
+
+	"github.com/huutien2801/shop-system/config"
+	"github.com/huutien2801/shop-system/entities"
+	"github.com/huutien2801/shop-system/models"
+	"github.com/huutien2801/shop-system/utils"
 
 	"github.com/gorilla/mux"
 	"gopkg.in/mgo.v2/bson"
