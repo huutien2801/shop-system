@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"CRUD/config"
-	"CRUD/entities"
-	"CRUD/models"
-	"CRUD/utils"
+	 "https://github.com/huutien2801/shop-system/config"
+	 "https://github.com/huutien2801/shop-system/entities"
+	 "https://github.com/huutien2801/shop-system/models"
+	 "https://github.com/huutien2801/shop-system/utils"
 	"encoding/json"
 	"net/http"
 	"strconv"

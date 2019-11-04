@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"CRUD/routes"
-	"CRUD/utils"
+	utils "github.com/huutien2801/shop-system/utils"
+	routes "github.com/huutien2801/shop-system/routes"
 )
 
 func main() {
