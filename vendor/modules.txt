@@ -1,0 +1,8 @@
+# github.com/gorilla/mux v1.7.3
+github.com/gorilla/mux
+# gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
+gopkg.in/mgo.v2
+gopkg.in/mgo.v2/bson
+gopkg.in/mgo.v2/internal/sasl
+gopkg.in/mgo.v2/internal/scram
+gopkg.in/mgo.v2/internal/json
