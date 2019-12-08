@@ -1,68 +1,72 @@
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    "net/http"
-    "github.com/huutien2801/shop-system/models"
-    "github.com/huutien2801/shop-system/api"
-    "go.mongodb.org/mongo-driver/mongo"
-    "go.mongodb.org/mongo-driver/mongo/options"
-    //routes "github.com/huutien2801/shop-system/routes"
-    "github.com/gorilla/mux"
+	"context"
+	"fmt"
+	"github.com/huutien2801/shop-system/api"
+	"github.com/huutien2801/shop-system/models"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"net/http"
+	"os"
+	//routes "github.com/huutien2801/shop-system/routes"
+	"github.com/gorilla/mux"
 )
 
 var username = "admin"
-var host1 = "shopdb-svkhj.mongodb.net/test?retryWrites=true&w=majority" 
+var host1 = "shopdb-svkhj.mongodb.net/test?retryWrites=true&w=majority"
 
-func onConnectedDB(client *mongo.Client){
-    models.InitProductDB(client)
-    fmt.Println("Connected to MongoDB successfully")
+func onConnectedDB(client *mongo.Client) {
+	models.InitProductDB(client)
+	models.InitCategoryDB(client)
+	fmt.Println("Connected to MongoDB successfully")
 }
 func main() {
 
-    ctx := context.TODO()
+	ctx := context.TODO()
 	pw := "PBhUtEoEtbV8d3kJ"
-    mongoURI := fmt.Sprintf("mongodb+srv://%s:%s@%s", username, pw, host1)
-    fmt.Println("connection string is:", mongoURI)
+	mongoURI := fmt.Sprintf("mongodb+srv://%s:%s@%s", username, pw, host1)
+	fmt.Println("connection string is:", mongoURI)
 
-    // Set client options and connect
-    clientOptions := options.Client().ApplyURI(mongoURI)
-    client, err := mongo.Connect(ctx, clientOptions)
-    if err != nil {
-        fmt.Println(err)
-        os.Exit(1)
-    }
-  
-    err = client.Ping(ctx, nil)
-    if err != nil {
-        fmt.Println(err)
-        os.Exit(1)
-    }
-    onConnectedDB(client)
-    // api.FindAllProduct()
+	// Set client options and connect
+	clientOptions := options.Client().ApplyURI(mongoURI)
+	client, err := mongo.Connect(ctx, clientOptions)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
-    r := mux.NewRouter()
-    http.Handle("/", r)
-    port := "5000"
-    fmt.Printf("Server is running at port: %s",port)
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	onConnectedDB(client)
+	// api.FindAllProduct()
 
-    //API for products
-    r.HandleFunc("/products", api.FindAllProductAPI).Methods("GET")
-    r.HandleFunc("/products/find-one", api.FindOneProductAPI).Methods("GET")
-    r.HandleFunc("/products", api.DeleteProductAPI).Methods("DELETE")
-    r.HandleFunc("/products", api.CreateProductAPI).Methods("POST")
-    r.HandleFunc("/products", api.UpdateProductAPI).Methods("PUT")
-    //API for category
-    //TODO
+	r := mux.NewRouter()
+	http.Handle("/", r)
+	port := "5000"
+	fmt.Printf("Server is running at port: %s", port)
 
-    //API for history-trip
-    //TODO
+	//API for products
+	r.HandleFunc("/products", api.FindAllProductAPI).Methods("GET")
+	r.HandleFunc("/products/find-one", api.FindOneProductAPI).Methods("GET")
+	r.HandleFunc("/products", api.DeleteProductAPI).Methods("DELETE")
+	r.HandleFunc("/products", api.CreateProductAPI).Methods("POST")
+	r.HandleFunc("/products", api.UpdateProductAPI).Methods("PUT")
+	//API for category
+	r.HandleFunc("/categories", api.FindAllCategoriesAPI).Methods("GET")
+	r.HandleFunc("/categories/find-one", api.FindOneCategoryAPI).Methods("GET")
+	r.HandleFunc("/categories", api.DeleteCategoryAPI).Methods("DELETE")
+	r.HandleFunc("/categories", api.CreateCategoryAPI).Methods("POST")
+	r.HandleFunc("/categories", api.UpdateCategoryAPI).Methods("PUT")
 
-    err2 := http.ListenAndServe(":5000", r)
+	//API for history-trip
+	//TODO
+
+	err2 := http.ListenAndServe(":5000", r)
 	if err2 != nil {
 		fmt.Println(err2)
-    }
+	}
 }
-
