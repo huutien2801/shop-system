@@ -1,4 +1,4 @@
-package model
+package models
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -6,9 +6,8 @@ import (
 )
 
 type Category struct {
-	ID           primitive.ObjectID `json:"id" bson:"_id"`
-	Name         string             `json:"name" bson:"name"`
-	CategoryCode int32              `json:"categoryCode" bson:"categoryCode"`
+	ID   primitive.ObjectID `json:"id" bson:"_id"`
+	Name string             `json:"name" bson:"name"`
 }
 
 var CategoryDB = DbModel{
