@@ -23,8 +23,8 @@ func FindAllOrder(input models.Order, limit int64, offset int64) []*models.Order
 	if input.OrderCode != "" {
 		filter["order_code"] = input.OrderCode
 	}
-	if input.ProductCode != nil {
-		filter["product_code"] = input.ProductCode
+	if input.Products != nil {
+		filter["product"] = input.Products
 	}
 	if input.TotalPrice != 0 {
 		filter["total_price"] = input.TotalPrice
@@ -115,8 +115,8 @@ func UpdateOrder(id string, newUpdater models.Order) *mongo.UpdateResult {
 		bsonUpdate["deliver_time"] = newUpdater.DeliverTime
 	}
 
-	if newUpdater.ProductCode != nil {
-		bsonUpdate["product_code"] = newUpdater.ProductCode
+	if newUpdater.Products != nil {
+		bsonUpdate["product"] = newUpdater.Products
 	}
 	update := bson.M{
 		"$set": bsonUpdate,
