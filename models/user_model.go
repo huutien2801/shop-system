@@ -1,9 +1,11 @@
 package models
 
 import (
+	"time"
+
+	"github.com/patrickmn/go-cache"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"time"
 )
 
 type User struct {
@@ -35,7 +37,12 @@ var UserDB = DbModel{
 	ColName: "users",
 	DbName:  "ShopDB",
 }
+var UserCache *cache.Cache
 
 func InitUserDB(client *mongo.Client) {
 	UserDB.Collection = ProductDB.GetCollection(client)
+}
+
+func InitUserCache() {
+	UserCache = cache.New(5*time.Minute, 10*time.Minute)
 }

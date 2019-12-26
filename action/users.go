@@ -2,16 +2,21 @@ package action
 
 import (
 	"context"
+	"fmt"
 
 	"log"
 
 	"github.com/huutien2801/shop-system/models"
+	"github.com/patrickmn/go-cache"
+	uuid "github.com/satori/go.uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"golang.org/x/crypto/bcrypt"
 )
 
+//FindAllUser function
 func FindAllUser(input models.User, limit int64, offset int64) []*models.User {
 
 	//Set query
@@ -64,7 +69,15 @@ func FindAllUser(input models.User, limit int64, offset int64) []*models.User {
 	return results
 }
 
+//CreateUser function
 func CreateUser(newUser models.User) *mongo.InsertOneResult {
+
+	password := []byte(newUser.Password)
+	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatal(err)
+	}
+	newUser.Password = string(hashedPassword)
 
 	insertResult, err := models.UserDB.Collection.InsertOne(context.TODO(), newUser)
 	if err != nil {
@@ -73,9 +86,10 @@ func CreateUser(newUser models.User) *mongo.InsertOneResult {
 	return insertResult
 }
 
+//DeleteUser function
 func DeleteUser(id string) *mongo.DeleteResult {
-	objectId, _ := primitive.ObjectIDFromHex(id)
-	deleteResult, err := models.UserDB.Collection.DeleteOne(context.TODO(), bson.M{"_id": objectId})
+	objectID, _ := primitive.ObjectIDFromHex(id)
+	deleteResult, err := models.UserDB.Collection.DeleteOne(context.TODO(), bson.M{"_id": objectID})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,11 +97,12 @@ func DeleteUser(id string) *mongo.DeleteResult {
 	// fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
 }
 
+//UpdateUser function
 func UpdateUser(id string, newUpdater models.User) *mongo.UpdateResult {
 
-	objectId, _ := primitive.ObjectIDFromHex(id)
+	objectID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{
-		"_id": objectId,
+		"_id": objectID,
 	}
 
 	bsonUpdate := bson.M{}
@@ -130,10 +145,11 @@ func UpdateUser(id string, newUpdater models.User) *mongo.UpdateResult {
 	return updateResult
 }
 
+//FindOneUser function
 func FindOneUser(id string) models.User {
-	objectId, _ := primitive.ObjectIDFromHex(id)
+	objectID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{
-		"_id": objectId,
+		"_id": objectID,
 	}
 	var result models.User
 	err := models.UserDB.Collection.FindOne(context.TODO(), filter).Decode(&result)
@@ -141,4 +157,40 @@ func FindOneUser(id string) models.User {
 		log.Fatal(err)
 	}
 	return result
+}
+
+//Login function
+func Login(input models.User) string {
+	password := []byte(input.Password)
+	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatal(err)
+	}
+	filter := bson.M{
+		"username": input.Username,
+		"password": string(hashedPassword),
+	}
+
+	var result models.User
+	err = models.UserDB.Collection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+	sessionToken := uuid.NewV4()
+	if err != nil {
+		fmt.Printf("Something went wrong: %s", err)
+		log.Fatal(err)
+	}
+	models.UserCache.Set(result.Username, sessionToken.String(), cache.DefaultExpiration)
+	return sessionToken.String()
+}
+
+//Logout function
+func Logout(sessionToken string) bool {
+	_, found := models.UserCache.Get(sessionToken)
+	if found {
+		models.UserCache.Delete(sessionToken)
+		return true
+	}
+	return false
 }
