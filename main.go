@@ -19,6 +19,7 @@ var host1 = "shopdb-svkhj.mongodb.net/test?retryWrites=true&w=majority"
 func onConnectedDB(client *mongo.Client) {
 	models.InitProductDB(client)
 	models.InitCategoryDB(client)
+	models.InitCharityDB(client)
 	fmt.Println("Connected to MongoDB successfully")
 }
 func main() {
@@ -72,6 +73,12 @@ func main() {
 	r.HandleFunc("/history/find-one", api.FindOneHistoryAPI).Methods("GET")
 	r.HandleFunc("/history", api.DeleteHistoryAPI).Methods("DELETE")
 	r.HandleFunc("/history", api.CreateHistoryAPI).Methods("POST")
+	//API for charity
+	r.HandleFunc("/charity", api.FindAllCharityAPI).Methods("GET")
+	r.HandleFunc("/charity/find-one", api.FindOneCharityAPI).Methods("GET")
+	r.HandleFunc("/charity", api.DeleteCharityAPI).Methods("DELETE")
+	r.HandleFunc("/charity", api.CreateCharityAPI).Methods("POST")
+	r.HandleFunc("/charity", api.UpdateCharityAPI).Methods("PUT")
 	//API for history-trip
 	//TODO
 
