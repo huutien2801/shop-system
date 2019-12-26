@@ -20,6 +20,7 @@ func onConnectedDB(client *mongo.Client) {
 	models.InitProductDB(client)
 	models.InitCategoryDB(client)
 	models.InitCharityDB(client)
+	models.InitPromotionDB(client)
 	fmt.Println("Connected to MongoDB successfully")
 }
 func main() {
@@ -79,6 +80,12 @@ func main() {
 	r.HandleFunc("/charity", api.DeleteCharityAPI).Methods("DELETE")
 	r.HandleFunc("/charity", api.CreateCharityAPI).Methods("POST")
 	r.HandleFunc("/charity", api.UpdateCharityAPI).Methods("PUT")
+	//API for promotion
+	r.HandleFunc("/promotion", api.FindAllPromotionAPI).Methods("GET")
+	r.HandleFunc("/promotion/find-one", api.FindOnePromotionAPI).Methods("GET")
+	r.HandleFunc("/promotion", api.DeletePromotionAPI).Methods("DELETE")
+	r.HandleFunc("/promotion", api.CreatePromotionAPI).Methods("POST")
+	r.HandleFunc("/promotion", api.UpdatePromotionAPI).Methods("PUT")
 	//API for history-trip
 	//TODO
 
