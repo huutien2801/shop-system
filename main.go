@@ -21,6 +21,7 @@ func onConnectedDB(client *mongo.Client) {
 	models.InitCategoryDB(client)
 	models.InitCharityDB(client)
 	models.InitPromotionDB(client)
+	models.InitOrderDB(client)
 	fmt.Println("Connected to MongoDB successfully")
 }
 func main() {

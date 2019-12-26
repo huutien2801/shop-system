@@ -9,7 +9,7 @@ import (
 type Order struct {
 	ID             primitive.ObjectID `json:"id" bson:"_id"`
 	OrderCode      string             `json:"orderCode" bson:"order_code"`
-	ProductCode    *string            `json:"productCode" bson:"product_code"`
+	Products       *ProductDetail     `json:"productCode" bson:"product_code"`
 	TotalPrice     int32              `json:"totalPrice" bson:"total_price"`
 	PurchaseTime   *time.Time         `json:"purchaseDate" bson:"purchase_date"`
 	DeliverTime    *time.Time         `json:"deliverTime" bson:"deliver_time"`
@@ -17,6 +17,11 @@ type Order struct {
 	UserName       string             `json:"userName" bson:"user_name"`
 	Status         string             `json:"status" bson:"status"`
 	DeliverAddress string             `json:"deliverAddress" bson:"deliver_address"`
+}
+
+type ProductDetail struct {
+	ProductCode string `json:"productCode" bson:"product_code"`
+	Amount      int    `json:"amount" bson:"amount"`
 }
 
 type OrderStatusEnum struct {
@@ -46,6 +51,6 @@ var OrderDB = DbModel{
 	DbName:  "ShopDB",
 }
 
-func InitProductDB(client *mongo.Client) {
+func InitOrderDB(client *mongo.Client) {
 	OrderDB.Collection = OrderDB.GetCollection(client)
 }
