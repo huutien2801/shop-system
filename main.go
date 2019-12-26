@@ -67,6 +67,11 @@ func main() {
 	r.HandleFunc("/user", api.DeleteUserAPI).Methods("DELETE")
 	r.HandleFunc("/user", api.CreateUserAPI).Methods("POST")
 	r.HandleFunc("/user", api.UpdateUserAPI).Methods("PUT")
+	//API for history
+	r.HandleFunc("/history", api.FindAllHistoryAPI).Methods("GET")
+	r.HandleFunc("/history/find-one", api.FindOneHistoryAPI).Methods("GET")
+	r.HandleFunc("/history", api.DeleteHistoryAPI).Methods("DELETE")
+	r.HandleFunc("/history", api.CreateHistoryAPI).Methods("POST")
 	//API for history-trip
 	//TODO
 
