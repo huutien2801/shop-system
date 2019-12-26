@@ -2,22 +2,43 @@ package action
 
 import (
 	"context"
-	"fmt"
+
+	"log"
+
 	"github.com/huutien2801/shop-system/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
 )
 
-func FindAllProduct() []*models.Product {
+func FindAllProduct(input models.ClientProductInput, limit int64, offset int64) []*models.Product {
 
+	//Set query
 	findOptions := options.Find()
-	findOptions.SetLimit(2)
+	findOptions.SetLimit(limit)
+	findOptions.SetSkip(offset)
+	filter := bson.M{}
+
+	if input.Name != "" {
+		filter["name"] = input.Name
+	}
+	if input.Status != "" {
+		filter["status"] = input.Status
+	}
+
+	if input.ActionFilter != "" {
+		if input.ActionFilter == models.ActionType.PRICE_ASC {
+			findOptions.SetSort(bson.M{"price": 1})
+		}
+		if input.ActionFilter == models.ActionType.PRICE_DESC {
+			findOptions.SetSort(bson.M{"price": -1})
+		}
+		//TODO: Sort by time
+	}
 
 	var results []*models.Product
-	cur, err := models.ProductDB.Collection.Find(context.TODO(), bson.M{}, findOptions)
+	cur, err := models.ProductDB.Collection.Find(context.TODO(), filter, findOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,9 +62,6 @@ func FindAllProduct() []*models.Product {
 
 	// Close the cursor once finished
 	cur.Close(context.TODO())
-	for _, value := range results {
-		fmt.Println(*value)
-	}
 	return results
 }
 
