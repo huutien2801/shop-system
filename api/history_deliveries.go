@@ -2,6 +2,7 @@ package api
 
 import (
 	"log"
+	"time"
 
 	"github.com/huutien2801/shop-system/action"
 	"github.com/huutien2801/shop-system/models"
@@ -9,8 +10,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strconv"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func FindAllHistoryAPI(w http.ResponseWriter, r *http.Request) {
@@ -60,6 +62,7 @@ func FindAllHistoryAPI(w http.ResponseWriter, r *http.Request) {
 func CreateHistoryAPI(w http.ResponseWriter, r *http.Request) {
 	var history models.HistoryDelivery
 	history.ID = primitive.NewObjectID()
+	history.CreatedTime = time.Now()
 	err := json.NewDecoder(r.Body).Decode(&history)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
