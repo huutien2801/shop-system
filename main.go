@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/huutien2801/shop-system/api"
 	"github.com/huutien2801/shop-system/models"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"net/http"
-	"os"
+
 	//routes "github.com/huutien2801/shop-system/routes"
 	"github.com/gorilla/mux"
 )
@@ -23,6 +25,10 @@ func onConnectedDB(client *mongo.Client) {
 	models.InitPromotionDB(client)
 	models.InitOrderDB(client)
 	fmt.Println("Connected to MongoDB successfully")
+}
+
+func onInitCache() {
+	models.InitUserCache()
 }
 func main() {
 
@@ -47,6 +53,9 @@ func main() {
 	onConnectedDB(client)
 	// api.FindAllProduct()
 
+	//Init Cache
+	onInitCache()
+
 	r := mux.NewRouter()
 	http.Handle("/", r)
 	port := "5000"
@@ -70,6 +79,8 @@ func main() {
 	r.HandleFunc("/user", api.DeleteUserAPI).Methods("DELETE")
 	r.HandleFunc("/user", api.CreateUserAPI).Methods("POST")
 	r.HandleFunc("/user", api.UpdateUserAPI).Methods("PUT")
+	r.HandleFunc("/user/login", api.LoginAPI).Methods("POST")
+	r.HandleFunc("/user/logout", api.LogoutAPI).Methods("POST")
 	//API for history
 	r.HandleFunc("/history", api.FindAllHistoryAPI).Methods("GET")
 	r.HandleFunc("/history/find-one", api.FindOneHistoryAPI).Methods("GET")
