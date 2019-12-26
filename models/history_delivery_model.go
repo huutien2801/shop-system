@@ -1,9 +1,10 @@
 package models
 
 import (
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"time"
 )
 
 type HistoryDelivery struct {
@@ -13,6 +14,7 @@ type HistoryDelivery struct {
 	DeliverTime *time.Time         `json:"deliverTime" bson:"deliver_time"`
 	Status      string             `json:"status" bson:"status"`
 	OrderCode   string             `json:"orderCode" bson:"order_code"`
+	CreatedTime *time.Time         `json:"createdTime" bson:"created_time"`
 }
 
 type HistoryStatusEnum struct {
