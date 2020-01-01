@@ -29,9 +29,9 @@ func FindAllUser(input models.User, limit int64, offset int64) []*models.User {
 	if input.FullName != "" {
 		filter["full_name"] = bson.M{"$regex": input.FullName}
 	}
-	if input.Address != "" {
-		filter["address"] = bson.M{"$regex": input.Address}
-	}
+	// if input.Address != "" {
+	// 	filter["address"] = bson.M{"$regex": input.Address}
+	// }
 	if input.UserRole != "" {
 		filter["user_role"] = input.UserRole
 	}
@@ -115,9 +115,9 @@ func UpdateUser(id string, newUpdater models.User) *mongo.UpdateResult {
 		bsonUpdate["phone_number"] = newUpdater.PhoneNumber
 	}
 
-	if newUpdater.Address != "" {
-		bsonUpdate["address"] = newUpdater.Address
-	}
+	// if newUpdater.Address != "" {
+	// 	bsonUpdate["address"] = newUpdater.Address
+	// }
 
 	if newUpdater.DateOfBirth != nil {
 		bsonUpdate["date_of_birth"] = newUpdater.DateOfBirth
