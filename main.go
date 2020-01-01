@@ -21,13 +21,10 @@ var host1 = "shopdb-svkhj.mongodb.net/test?retryWrites=true&w=majority"
 func onConnectedDB(client *mongo.Client) {
 	models.InitProductDB(client)
 	models.InitCategoryDB(client)
-<<<<<<< HEAD
 	models.InitCharityDB(client)
 	models.InitPromotionDB(client)
 	models.InitOrderDB(client)
-=======
 	models.InitHistoryDeliveryDB(client)
->>>>>>> features/history-delivery
 	fmt.Println("Connected to MongoDB successfully")
 }
 
