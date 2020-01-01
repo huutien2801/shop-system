@@ -27,6 +27,10 @@ func FindAllUser(input models.User, limit int64, offset int64) models.Response {
 	if input.FullName != "" {
 		filter["full_name"] = bson.M{"$regex": input.FullName}
 	}
+
+	if input.Username != "" {
+		filter["username"] = input.Username
+	}
 	// if input.Address != "" {
 	// 	filter["address"] = bson.M{"$regex": input.Address}
 	// }
