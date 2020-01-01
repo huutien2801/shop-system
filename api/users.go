@@ -137,8 +137,8 @@ func LoginAPI(w http.ResponseWriter, r *http.Request) {
 	//Convert string to int64
 	results := action.Login(input)
 
-	if results == "" {
-		respondWithError(w, http.StatusBadRequest, "Your username or password is wrong")
+	if results.Status == models.ResponseStatus.ERROR {
+		respondWithJson(w, http.StatusOK, results)
 		return
 	} else {
 		respondWithJson(w, http.StatusOK, results)
@@ -151,8 +151,8 @@ func LogoutAPI(w http.ResponseWriter, r *http.Request) {
 	//Convert string to int64
 	results := action.Logout(sessionToken)
 
-	if results == false {
-		respondWithError(w, http.StatusBadRequest, "Logout failed")
+	if results.Status == models.ResponseStatus.ERROR {
+		respondWithJson(w, http.StatusOK, results)
 		return
 	} else {
 		respondWithJson(w, http.StatusOK, results)

@@ -40,7 +40,7 @@ var UserDB = DbModel{
 var UserCache *cache.Cache
 
 func InitUserDB(client *mongo.Client) {
-	UserDB.Collection = ProductDB.GetCollection(client)
+	UserDB.Collection = UserDB.GetCollection(client)
 }
 
 func InitUserCache() {

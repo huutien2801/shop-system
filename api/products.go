@@ -49,6 +49,7 @@ func FindAllProductAPI(w http.ResponseWriter, r *http.Request) {
 	offset, _ := strconv.ParseInt(offsetStr, 0, 64)
 	results := action.FindAllProduct(input, limit, offset)
 
+	enableCors(&w)
 	if results == nil {
 		respondWithError(w, http.StatusBadRequest, "No document is match with your query")
 		return
@@ -134,4 +135,8 @@ func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
+}
+
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }

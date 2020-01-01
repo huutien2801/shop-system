@@ -161,37 +161,63 @@ func FindOneUser(id string) models.User {
 }
 
 //Login function
-func Login(input models.User) string {
-	password := []byte(input.Password)
-	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
-	if err != nil {
-		log.Fatal(err)
-	}
+func Login(input models.User) models.Response {
+
 	filter := bson.M{
 		"username": input.Username,
-		"password": string(hashedPassword),
+	}
+	var result models.User
+	err := models.UserDB.Collection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
 
-	var result models.User
-	err = models.UserDB.Collection.FindOne(context.TODO(), filter).Decode(&result)
+	password := []byte(input.Password)
+	err1 := bcrypt.CompareHashAndPassword([]byte(result.Password), password)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
+	}
+	if err1 != nil {
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err1.Error(),
+		}
 	}
 	sessionToken := uuid.NewV4()
 	if err != nil {
-		fmt.Printf("Something went wrong: %s", err)
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	models.UserCache.Set(result.Username, sessionToken.String(), cache.DefaultExpiration)
-	return sessionToken.String()
+
+	models.UserCache.Set(sessionToken.String(), result.Username, cache.DefaultExpiration)
+
+	return models.Response{
+		Data:   sessionToken.String(),
+		Status: models.ResponseStatus.OK,
+	}
 }
 
 //Logout function
-func Logout(sessionToken string) bool {
-	_, found := models.UserCache.Get(sessionToken)
+func Logout(sessionToken string) models.Response {
+	item, found := models.UserCache.Get(sessionToken)
+	fmt.Println(item)
 	if found {
 		models.UserCache.Delete(sessionToken)
-		return true
+		return models.Response{
+			Status:  models.ResponseStatus.OK,
+			Message: "Logout Successfully",
+		}
 	}
-	return false
+	return models.Response{
+		Status:  models.ResponseStatus.ERROR,
+		Message: "Logout Failed",
+	}
 }
