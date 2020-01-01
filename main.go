@@ -80,7 +80,7 @@ func main() {
 	r.HandleFunc("/user", api.DeleteUserAPI).Methods("DELETE")
 	r.HandleFunc("/user", api.CreateUserAPI).Methods("POST")
 	r.HandleFunc("/user", api.UpdateUserAPI).Methods("PUT")
-	// r.HandleFunc("/user/login", api.LoginAPI).Methods("POST")
+	r.HandleFunc("/user/login", api.LoginAPI).Methods("POST")
 	r.HandleFunc("/user/logout", api.LogoutAPI).Methods("POST")
 	//API for history
 	r.HandleFunc("/history", api.FindAllHistoryAPI).Methods("GET")

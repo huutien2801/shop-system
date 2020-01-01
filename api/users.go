@@ -125,25 +125,25 @@ func FindOneUserAPI(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusOK, result)
 }
 
-// func LoginAPI(w http.ResponseWriter, r *http.Request) {
+func LoginAPI(w http.ResponseWriter, r *http.Request) {
 
-// 	var input models.User
-// 	err := json.NewDecoder(r.Body).Decode(&input)
+	var input models.User
+	err := json.NewDecoder(r.Body).Decode(&input)
 
-// 	if err != nil {
-// 		respondWithError(w, http.StatusBadRequest, "Invalid json query")
-// 		return
-// 	}
-// 	//Convert string to int64
-// 	results := action.Login(input)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid json query")
+		return
+	}
+	//Convert string to int64
+	results := action.Login(input)
 
-// 	if results == "" {
-// 		respondWithError(w, http.StatusBadRequest, "Your username or password is wrong")
-// 		return
-// 	} else {
-// 		respondWithJson(w, http.StatusOK, results)
-// 	}
-// }
+	if results == "" {
+		respondWithError(w, http.StatusBadRequest, "Your username or password is wrong")
+		return
+	} else {
+		respondWithJson(w, http.StatusOK, results)
+	}
+}
 
 func LogoutAPI(w http.ResponseWriter, r *http.Request) {
 

@@ -6,6 +6,8 @@ github.com/golang/snappy
 github.com/gorilla/mux
 # github.com/patrickmn/go-cache v2.1.0+incompatible
 github.com/patrickmn/go-cache
+# github.com/satori/go.uuid v1.2.0
+github.com/satori/go.uuid
 # github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c
 github.com/xdg/scram
 # github.com/xdg/stringprep v1.0.0

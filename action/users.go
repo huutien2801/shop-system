@@ -2,10 +2,13 @@ package action
 
 import (
 	"context"
+	"fmt"
 
 	"log"
 
 	"github.com/huutien2801/shop-system/models"
+	"github.com/patrickmn/go-cache"
+	uuid "github.com/satori/go.uuid"
 	// uuid "github.com/satori/go.uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -158,30 +161,30 @@ func FindOneUser(id string) models.User {
 }
 
 //Login function
-// func Login(input models.User) string {
-// 	password := []byte(input.Password)
-// 	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	filter := bson.M{
-// 		"username": input.Username,
-// 		"password": string(hashedPassword),
-// 	}
+func Login(input models.User) string {
+	password := []byte(input.Password)
+	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatal(err)
+	}
+	filter := bson.M{
+		"username": input.Username,
+		"password": string(hashedPassword),
+	}
 
-// 	var result models.User
-// 	err = models.UserDB.Collection.FindOne(context.TODO(), filter).Decode(&result)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	sessionToken := uuid.NewV4()
-// 	if err != nil {
-// 		fmt.Printf("Something went wrong: %s", err)
-// 		log.Fatal(err)
-// 	}
-// 	models.UserCache.Set(result.Username, sessionToken.String(), cache.DefaultExpiration)
-// 	return sessionToken.String()
-// }
+	var result models.User
+	err = models.UserDB.Collection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+	sessionToken := uuid.NewV4()
+	if err != nil {
+		fmt.Printf("Something went wrong: %s", err)
+		log.Fatal(err)
+	}
+	models.UserCache.Set(result.Username, sessionToken.String(), cache.DefaultExpiration)
+	return sessionToken.String()
+}
 
 //Logout function
 func Logout(sessionToken string) bool {
