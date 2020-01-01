@@ -62,7 +62,7 @@ func FindAllHistoryAPI(w http.ResponseWriter, r *http.Request) {
 func CreateHistoryAPI(w http.ResponseWriter, r *http.Request) {
 	var history models.HistoryDelivery
 	history.ID = primitive.NewObjectID()
-	history.CreatedTime = time.Now()
+	*history.CreatedTime = time.Now()
 	err := json.NewDecoder(r.Body).Decode(&history)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
