@@ -59,8 +59,6 @@ func main() {
 
 	r := mux.NewRouter()
 	http.Handle("/", r)
-	port := "5000"
-	fmt.Printf("Server is running at port: %s", port)
 
 	//API for products
 	r.HandleFunc("/products", api.FindAllProductAPI).Methods("GET")
@@ -101,8 +99,12 @@ func main() {
 	r.HandleFunc("/promotion", api.UpdatePromotionAPI).Methods("PUT")
 	//API for history-trip
 	//TODO
-
-	err2 := http.ListenAndServe(":5000", r)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "5000"
+	}
+	fmt.Printf("Server is running at port: %s", port)
+	err2 := http.ListenAndServe(":"+port, r)
 	if err2 != nil {
 		fmt.Println(err2)
 	}
