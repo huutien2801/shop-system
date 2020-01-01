@@ -4,21 +4,19 @@ import (
 	"context"
 	"fmt"
 
-	"log"
-
 	"github.com/huutien2801/shop-system/models"
 	"github.com/patrickmn/go-cache"
 	uuid "github.com/satori/go.uuid"
+
 	// uuid "github.com/satori/go.uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/crypto/bcrypt"
 )
 
 //FindAllUser function
-func FindAllUser(input models.User, limit int64, offset int64) []*models.User {
+func FindAllUser(input models.User, limit int64, offset int64) models.Response {
 
 	//Set query
 	findOptions := options.Find()
@@ -45,7 +43,10 @@ func FindAllUser(input models.User, limit int64, offset int64) []*models.User {
 	var results []*models.User
 	cur, err := models.UserDB.Collection.Find(context.TODO(), filter, findOptions)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
 	// Finding multiple documents returns a cursor
 	// Iterating through the cursor allows us to decode documents one at a time
@@ -55,51 +56,77 @@ func FindAllUser(input models.User, limit int64, offset int64) []*models.User {
 		var elem models.User
 		err := cur.Decode(&elem)
 		if err != nil {
-			log.Fatal(err)
+			return models.Response{
+				Status:  models.ResponseStatus.ERROR,
+				Message: err.Error(),
+			}
 		}
 
 		results = append(results, &elem)
 	}
 
 	if err := cur.Err(); err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
 
 	// Close the cursor once finished
 	cur.Close(context.TODO())
-	return results
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Message: "Get data successfully",
+		Data:    results,
+	}
 }
 
 //CreateUser function
-func CreateUser(newUser models.User) *mongo.InsertOneResult {
+func CreateUser(newUser models.User) models.Response {
 
 	password := []byte(newUser.Password)
 	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
 	newUser.Password = string(hashedPassword)
 
 	insertResult, err := models.UserDB.Collection.InsertOne(context.TODO(), newUser)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return insertResult
+	return models.Response{
+		Status: models.ResponseStatus.OK,
+		Data:   insertResult,
+	}
 }
 
 //DeleteUser function
-func DeleteUser(id string) *mongo.DeleteResult {
+func DeleteUser(id string) models.Response {
 	objectID, _ := primitive.ObjectIDFromHex(id)
 	deleteResult, err := models.UserDB.Collection.DeleteOne(context.TODO(), bson.M{"_id": objectID})
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return deleteResult
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Message: "Delete successfully",
+		Data:    deleteResult,
+	}
 	// fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
 }
 
 //UpdateUser function
-func UpdateUser(id string, newUpdater models.User) *mongo.UpdateResult {
+func UpdateUser(id string, newUpdater models.User) models.Response {
 
 	objectID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{
@@ -141,13 +168,20 @@ func UpdateUser(id string, newUpdater models.User) *mongo.UpdateResult {
 	// var res User
 	updateResult, err := models.UserDB.Collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return updateResult
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Message: "Update successfully",
+		Data:    updateResult,
+	}
 }
 
 //FindOneUser function
-func FindOneUser(id string) models.User {
+func FindOneUser(id string) models.Response {
 	objectID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{
 		"_id": objectID,
@@ -155,9 +189,16 @@ func FindOneUser(id string) models.User {
 	var result models.User
 	err := models.UserDB.Collection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return result
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Message: "Update successfully",
+		Data:    result,
+	}
 }
 
 //Login function

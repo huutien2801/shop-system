@@ -49,8 +49,8 @@ func FindAllUserAPI(w http.ResponseWriter, r *http.Request) {
 	offset, _ := strconv.ParseInt(offsetStr, 0, 64)
 	results := action.FindAllUser(input, limit, offset)
 
-	if results == nil {
-		respondWithError(w, http.StatusBadRequest, "No document is match with your query")
+	if results.Status == models.ResponseStatus.ERROR {
+		respondWithJson(w, http.StatusOK, results)
 		return
 	} else {
 		respondWithJson(w, http.StatusOK, results)
@@ -66,8 +66,9 @@ func CreateUserAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		insertItem := action.CreateUser(user)
-		if insertItem == nil {
-			respondWithError(w, http.StatusBadRequest, "Create user failed")
+		if insertItem.Status == models.ResponseStatus.ERROR {
+			respondWithJson(w, http.StatusOK, insertItem)
+			return
 		} else {
 			respondWithJson(w, http.StatusOK, insertItem)
 		}
@@ -84,8 +85,8 @@ func DeleteUserAPI(w http.ResponseWriter, r *http.Request) {
 
 	id := keys[0]
 	deleteItem := action.DeleteUser(id)
-	if deleteItem == nil {
-		respondWithError(w, http.StatusBadRequest, "Delete user failed")
+	if deleteItem.Status == models.ResponseStatus.ERROR {
+		respondWithJson(w, http.StatusOK, deleteItem)
 	} else {
 		respondWithJson(w, http.StatusOK, deleteItem)
 	}
