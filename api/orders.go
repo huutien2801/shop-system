@@ -2,6 +2,7 @@ package api
 
 import (
 	"log"
+	"time"
 
 	"github.com/huutien2801/shop-system/action"
 	"github.com/huutien2801/shop-system/models"
@@ -9,8 +10,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strconv"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func FindAllOrderAPI(w http.ResponseWriter, r *http.Request) {
@@ -49,7 +51,7 @@ func FindAllOrderAPI(w http.ResponseWriter, r *http.Request) {
 	offset, _ := strconv.ParseInt(offsetStr, 0, 64)
 	results := action.FindAllOrder(input, limit, offset)
 
-	if results == nil {
+	if results.Status == models.ResponseStatus.ERROR {
 		respondWithError(w, http.StatusBadRequest, "No document is match with your query")
 		return
 	} else {
@@ -60,13 +62,14 @@ func FindAllOrderAPI(w http.ResponseWriter, r *http.Request) {
 func CreateOrderAPI(w http.ResponseWriter, r *http.Request) {
 	var order models.Order
 	order.ID = primitive.NewObjectID()
+	*order.CreatedTime = time.Now()
 	err := json.NewDecoder(r.Body).Decode(&order)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	} else {
 		insertItem := action.CreateOrder(order)
-		if insertItem == nil {
+		if insertItem.Status == models.ResponseStatus.ERROR {
 			respondWithError(w, http.StatusBadRequest, "Create order failed")
 		} else {
 			respondWithJson(w, http.StatusOK, insertItem)
@@ -84,9 +87,9 @@ func DeleteOrderAPI(w http.ResponseWriter, r *http.Request) {
 
 	id := keys[0]
 	deleteItem := action.DeleteOrder(id)
-	if deleteItem == nil {
+	if deleteItem.Status == models.ResponseStatus.ERROR {
 		respondWithError(w, http.StatusBadRequest, "Delete order failed")
-	} else {
+	}else{
 		respondWithJson(w, http.StatusOK, deleteItem)
 	}
 }
