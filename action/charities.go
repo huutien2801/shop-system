@@ -3,16 +3,14 @@ package action
 import (
 	"context"
 
-	"log"
 
 	"github.com/huutien2801/shop-system/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func FindAllCharity(input models.Charity, limit int64, offset int64) []*models.Charity {
+func FindAllCharity(input models.Charity, limit int64, offset int64) models.Response {
 
 	//Set query
 	findOptions := options.Find()
@@ -52,7 +50,10 @@ func FindAllCharity(input models.Charity, limit int64, offset int64) []*models.C
 	var results []*models.Charity
 	cur, err := models.CharityDB.Collection.Find(context.TODO(), filter, findOptions)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
 	// Finding multiple documents returns a cursor
 	// Iterating through the cursor allows us to decode documents one at a time
@@ -62,41 +63,65 @@ func FindAllCharity(input models.Charity, limit int64, offset int64) []*models.C
 		var elem models.Charity
 		err := cur.Decode(&elem)
 		if err != nil {
-			log.Fatal(err)
+			return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 		}
 
 		results = append(results, &elem)
 	}
 
 	if err := cur.Err(); err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
 
 	// Close the cursor once finished
 	cur.Close(context.TODO())
-	return results
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Message: "Success",
+		Data: results,
+	}
 }
 
-func CreateCharity(newCharity models.Charity) *mongo.InsertOneResult {
+func CreateCharity(newCharity models.Charity) models.Response {
 
 	insertResult, err := models.CharityDB.Collection.InsertOne(context.TODO(), newCharity)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return insertResult
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Message: "Success",
+		Data: insertResult,
+	}
 }
 
-func DeleteCharity(id string) *mongo.DeleteResult {
+func DeleteCharity(id string) models.Response {
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	deleteResult, err := models.CharityDB.Collection.DeleteOne(context.TODO(), bson.M{"_id": objectId})
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return deleteResult
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Message: "Success",
+		Data: deleteResult,
+	}
 	// fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
 }
 
-func UpdateCharity(id string, newUpdater models.Charity) *mongo.UpdateResult {
+func UpdateCharity(id string, newUpdater models.Charity) models.Response {
 
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{
@@ -135,12 +160,19 @@ func UpdateCharity(id string, newUpdater models.Charity) *mongo.UpdateResult {
 	// var res Charity
 	updateResult, err := models.CharityDB.Collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return updateResult
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Message: "Success",
+		Data: updateResult,
+	}
 }
 
-func FindOneCharity(id string) models.Charity {
+func FindOneCharity(id string) models.Response {
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{
 		"_id": objectId,
@@ -148,7 +180,14 @@ func FindOneCharity(id string) models.Charity {
 	var result models.Charity
 	err := models.CharityDB.Collection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return result
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Message: "Success",
+		Data: result,
+	}
 }

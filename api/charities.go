@@ -2,6 +2,7 @@ package api
 
 import (
 	"log"
+	"time"
 
 	"github.com/huutien2801/shop-system/action"
 	"github.com/huutien2801/shop-system/models"
@@ -49,7 +50,7 @@ func FindAllCharityAPI(w http.ResponseWriter, r *http.Request) {
 	offset, _ := strconv.ParseInt(offsetStr, 0, 64)
 	results := action.FindAllCharity(input, limit, offset)
 
-	if results == nil {
+	if results.Status == models.ResponseStatus.ERROR {
 		respondWithError(w, http.StatusBadRequest, "No document is match with your query")
 		return
 	} else {
@@ -60,13 +61,14 @@ func FindAllCharityAPI(w http.ResponseWriter, r *http.Request) {
 func CreateCharityAPI(w http.ResponseWriter, r *http.Request) {
 	var charity models.Charity
 	charity.ID = primitive.NewObjectID()
+	*charity.CreatedTime = time.Now()
 	err := json.NewDecoder(r.Body).Decode(&charity)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	} else {
 		insertItem := action.CreateCharity(charity)
-		if insertItem == nil {
+		if insertItem.Status == models.ResponseStatus.ERROR {
 			respondWithError(w, http.StatusBadRequest, "Create charity failed")
 		} else {
 			respondWithJson(w, http.StatusOK, insertItem)
@@ -84,7 +86,7 @@ func DeleteCharityAPI(w http.ResponseWriter, r *http.Request) {
 
 	id := keys[0]
 	deleteItem := action.DeleteCharity(id)
-	if deleteItem == nil {
+	if deleteItem.Status == models.ResponseStatus.ERROR {
 		respondWithError(w, http.StatusBadRequest, "Delete Charity failed")
 	} else {
 		respondWithJson(w, http.StatusOK, deleteItem)

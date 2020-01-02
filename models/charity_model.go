@@ -17,6 +17,7 @@ type Charity struct {
 	StartTime     *time.Time         `json:"startTime" bson:"start_time"`
 	FinishTime    *time.Time         `json:"finishTime" bson:"finish_time"`
 	Sponsor       *Sponsor           `json:"sponsor" bson:"sponsor"`
+	CreatedTime   *time.Time         `json:"createdTime" bson:"created_time"`
 }
 
 type Sponsor struct {
