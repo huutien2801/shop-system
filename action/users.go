@@ -146,6 +146,17 @@ func UpdateUser(id string, newUpdater models.User) models.Response {
 		bsonUpdate["phone_number"] = newUpdater.PhoneNumber
 	}
 
+	if newUpdater.Password != "" {
+		password := []byte(newUpdater.Password)
+		hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+		if err != nil {
+			return models.Response{
+				Status:  models.ResponseStatus.ERROR,
+				Message: err.Error(),
+			}
+		}
+		bsonUpdate["password"] = hashedPassword
+	}
 	// if newUpdater.Address != "" {
 	// 	bsonUpdate["address"] = newUpdater.Address
 	// }
