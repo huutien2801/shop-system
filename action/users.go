@@ -2,7 +2,6 @@ package action
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/huutien2801/shop-system/models"
 	"github.com/patrickmn/go-cache"
@@ -207,8 +206,28 @@ func FindOneUser(id string) models.Response {
 }
 
 //Login function
-func Login(input models.User) models.Response {
-
+func Login(input models.User, availableSessionToken string) models.Response {
+	if availableSessionToken != "" {
+		item, found := models.UserCache.Get(availableSessionToken)
+		if found {
+			filter := bson.M{
+				"username": item,
+			}
+			var result models.User
+			err := models.UserDB.Collection.FindOne(context.TODO(), filter).Decode(&result)
+			if err != nil {
+				return models.Response{
+					Status:  models.ResponseStatus.ERROR,
+					Message: err.Error(),
+				}
+			}
+			result.Session = availableSessionToken
+			return models.Response{
+				Data:   result,
+				Status: models.ResponseStatus.OK,
+			}
+		}
+	}
 	filter := bson.M{
 		"username": input.Username,
 	}
@@ -254,8 +273,8 @@ func Login(input models.User) models.Response {
 
 //Logout function
 func Logout(sessionToken string) models.Response {
-	item, found := models.UserCache.Get(sessionToken)
-	fmt.Println(item)
+	_, found := models.UserCache.Get(sessionToken)
+
 	if found {
 		models.UserCache.Delete(sessionToken)
 		return models.Response{
