@@ -16,6 +16,7 @@ type Promotion struct {
 	StartTime     *time.Time         `json:"startTime" bson:"start_time"`
 	FinishTime    *time.Time         `json:"finishTime" bson:"finish_time"`
 	ValueDiscount *int32             `json:"valueDiscount" bson:"value_discount"`
+	CreatedTime *time.Time         `json:"createdTime" bson:"created_time"`
 }
 
 type PromotionTypeEnum struct {

@@ -3,16 +3,15 @@ package action
 import (
 	"context"
 
-	"log"
 
 	"github.com/huutien2801/shop-system/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
+
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func FindAllPromotion(input models.Promotion, limit int64, offset int64) []*models.Promotion {
+func FindAllPromotion(input models.Promotion, limit int64, offset int64) models.Response {
 
 	//Set query
 	findOptions := options.Find()
@@ -39,7 +38,10 @@ func FindAllPromotion(input models.Promotion, limit int64, offset int64) []*mode
 	var results []*models.Promotion
 	cur, err := models.PromotionDB.Collection.Find(context.TODO(), filter, findOptions)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
 	// Finding multiple documents returns a cursor
 	// Iterating through the cursor allows us to decode documents one at a time
@@ -49,41 +51,65 @@ func FindAllPromotion(input models.Promotion, limit int64, offset int64) []*mode
 		var elem models.Promotion
 		err := cur.Decode(&elem)
 		if err != nil {
-			log.Fatal(err)
+			return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 		}
 
 		results = append(results, &elem)
 	}
 
 	if err := cur.Err(); err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
 
 	// Close the cursor once finished
 	cur.Close(context.TODO())
-	return results
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Data: results,
+		Message: "Success",
+	}
 }
 
-func CreatePromotion(newPromotion models.Promotion) *mongo.InsertOneResult {
+func CreatePromotion(newPromotion models.Promotion) models.Response {
 
 	insertResult, err := models.PromotionDB.Collection.InsertOne(context.TODO(), newPromotion)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return insertResult
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Data: insertResult,
+		Message: "Success",
+	}
 }
 
-func DeletePromotion(id string) *mongo.DeleteResult {
+func DeletePromotion(id string) models.Response {
 	objectID, _ := primitive.ObjectIDFromHex(id)
 	deleteResult, err := models.PromotionDB.Collection.DeleteOne(context.TODO(), bson.M{"_id": objectID})
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return deleteResult
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Data: deleteResult,
+		Message: "Success",
+	}
 	// fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
 }
 
-func UpdatePromotion(id string, newUpdater models.Promotion) *mongo.UpdateResult {
+func UpdatePromotion(id string, newUpdater models.Promotion) models.Response {
 
 	objectID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{
@@ -119,12 +145,19 @@ func UpdatePromotion(id string, newUpdater models.Promotion) *mongo.UpdateResult
 	// var res Promotion
 	updateResult, err := models.PromotionDB.Collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return updateResult
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Data: updateResult,
+		Message: "Success",
+	}
 }
 
-func FindOnePromotion(id string) models.Promotion {
+func FindOnePromotion(id string) models.Response {
 	objectID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{
 		"_id": objectID,
@@ -132,7 +165,14 @@ func FindOnePromotion(id string) models.Promotion {
 	var result models.Promotion
 	err := models.PromotionDB.Collection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return result
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Data: result,
+		Message: "Success",
+	}
 }
