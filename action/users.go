@@ -114,6 +114,7 @@ func CreateUser(newUser models.User) models.Response {
 //DeleteUser function
 func DeleteUser(id string) models.Response {
 	objectID, _ := primitive.ObjectIDFromHex(id)
+	
 	deleteResult, err := models.UserDB.Collection.DeleteOne(context.TODO(), bson.M{"_id": objectID})
 	if err != nil {
 		return models.Response{
@@ -155,7 +156,7 @@ func UpdateUser(id string, newUpdater models.User) models.Response {
 				Message: err.Error(),
 			}
 		}
-		bsonUpdate["password"] = hashedPassword
+		bsonUpdate["password"] = string(hashedPassword)
 	}
 	// if newUpdater.Address != "" {
 	// 	bsonUpdate["address"] = newUpdater.Address
