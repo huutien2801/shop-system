@@ -1,10 +1,10 @@
 package api
 
 import (
-	"log"
-	"time"
 	"github.com/huutien2801/shop-system/action"
 	"github.com/huutien2801/shop-system/models"
+	"log"
+	"time"
 
 	"encoding/json"
 	"net/http"
@@ -106,12 +106,13 @@ func UpdateUserAPI(w http.ResponseWriter, r *http.Request) {
 	id := keys[0]
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
+	sessionToken := r.Header.Get("Authorization")
 	enableCors(&w)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	} else {
-		updateItem := action.UpdateUser(id, user)
+		updateItem := action.UpdateUser(id, user, sessionToken)
 		respondWithJson(w, http.StatusOK, updateItem)
 	}
 }
