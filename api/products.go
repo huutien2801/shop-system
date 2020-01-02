@@ -61,6 +61,7 @@ func FindAllProductAPI(w http.ResponseWriter, r *http.Request) {
 func CreateProductAPI(w http.ResponseWriter, r *http.Request) {
 	var product models.Product
 	product.ID = primitive.NewObjectID()
+	*product.CreatedTime = time.Now()
 	err := json.NewDecoder(r.Body).Decode(&product)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
