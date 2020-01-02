@@ -98,12 +98,11 @@ func DeleteUserAPI(w http.ResponseWriter, r *http.Request) {
 func UpdateUserAPI(w http.ResponseWriter, r *http.Request) {
 	keys, ok := r.URL.Query()["id"]
 
-	if !ok || len(keys[0]) < 1 {
-		log.Println("Url Param 'key' is missing")
-		return
+	var id string
+	if ok {
+		id = keys[0]
 	}
 
-	id := keys[0]
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	sessionToken := r.Header.Get("Authorization")
