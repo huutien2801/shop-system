@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-
+	"time"
 	"github.com/huutien2801/shop-system/action"
 	"github.com/huutien2801/shop-system/models"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -12,7 +12,7 @@ import (
 
 func FindAllCategoriesAPI(w http.ResponseWriter, r *http.Request) {
 	results := action.FindAllCategories()
-	if results == nil {
+	if results.Status == models.ResponseStatus.ERROR {
 		respondWithError(w, http.StatusBadRequest, "Khong tim thay")
 		return
 	} else {
@@ -23,13 +23,14 @@ func FindAllCategoriesAPI(w http.ResponseWriter, r *http.Request) {
 func CreateCategoryAPI(w http.ResponseWriter, r *http.Request) {
 	var category models.Category
 	category.ID = primitive.NewObjectID()
+	*category.CreatedTime = time.Now()
 	err := json.NewDecoder(r.Body).Decode(&category)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	} else {
 		insertItem := action.CreateCategory(category)
-		if insertItem == nil {
+		if insertItem.Status == models.ResponseStatus.ERROR {
 			respondWithError(w, http.StatusBadRequest, "Create product failed")
 		} else {
 			respondWithJson(w, http.StatusOK, insertItem)
@@ -47,7 +48,7 @@ func DeleteCategoryAPI(w http.ResponseWriter, r *http.Request) {
 
 	id := keys[0]
 	deleteItem := action.DeleteCategory(id)
-	if deleteItem == nil {
+	if deleteItem.Status == models.ResponseStatus.ERROR {
 		respondWithError(w, http.StatusBadRequest, "Delete product failed")
 	} else {
 		respondWithJson(w, http.StatusOK, deleteItem)
