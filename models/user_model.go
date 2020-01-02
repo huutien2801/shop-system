@@ -20,6 +20,7 @@ type User struct {
 	Email       string             `json:"email" bson:"email"`
 	Avatar      string             `json:"avatar" bson:"avatar"`
 	Session     string             `json:"session" bson:"session"`
+	CreatedTime *time.Time         `json:"createdTime" bson:"created_time"`
 }
 
 type AddressDetailEnum struct {
