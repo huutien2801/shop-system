@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func FindAllProduct(input models.ClientProductInput, limit int64, offset int64) []*models.Product {
+func FindAllProduct(input models.ClientProductInput, limit int64, offset int64) models.Response {
 
 	//Set query
 	findOptions := options.Find()
@@ -40,7 +40,10 @@ func FindAllProduct(input models.ClientProductInput, limit int64, offset int64) 
 	var results []*models.Product
 	cur, err := models.ProductDB.Collection.Find(context.TODO(), filter, findOptions)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
 	// Finding multiple documents returns a cursor
 	// Iterating through the cursor allows us to decode documents one at a time
@@ -50,41 +53,65 @@ func FindAllProduct(input models.ClientProductInput, limit int64, offset int64) 
 		var elem models.Product
 		err := cur.Decode(&elem)
 		if err != nil {
-			log.Fatal(err)
+			return models.Response{
+				Status:  models.ResponseStatus.ERROR,
+				Message: err.Error(),
+			}
 		}
 
 		results = append(results, &elem)
 	}
 
 	if err := cur.Err(); err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
 
 	// Close the cursor once finished
 	cur.Close(context.TODO())
-	return results
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Data: results,
+		Message: "Success",
+	}
 }
 
-func CreateProduct(newProduct models.Product) *mongo.InsertOneResult {
+func CreateProduct(newProduct models.Product) models.Response {
 
 	insertResult, err := models.ProductDB.Collection.InsertOne(context.TODO(), newProduct)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return insertResult
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Data: insertResult,
+		Message: "Success",
+	}
 }
 
 func DeleteProduct(id string) *mongo.DeleteResult {
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	deleteResult, err := models.ProductDB.Collection.DeleteOne(context.TODO(), bson.M{"_id": objectId})
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return deleteResult
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Data: deleteResult,
+		Message: "Success",
+	}
 	// fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
 }
 
-func UpdateProduct(id string, newUpdater models.Product) *mongo.UpdateResult {
+func UpdateProduct(id string, newUpdater models.Product) models.Response {
 
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{
@@ -105,12 +132,19 @@ func UpdateProduct(id string, newUpdater models.Product) *mongo.UpdateResult {
 	// var res Product
 	updateResult, err := models.ProductDB.Collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return updateResult
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Data: updateResult,
+		Message: "Success",
+	}
 }
 
-func FindOneProduct(id string) models.Product {
+func FindOneProduct(id string) models.Response {
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{
 		"_id": objectId,
@@ -118,7 +152,14 @@ func FindOneProduct(id string) models.Product {
 	var result models.Product
 	err := models.ProductDB.Collection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
-		log.Fatal(err)
+		return models.Response{
+			Status:  models.ResponseStatus.ERROR,
+			Message: err.Error(),
+		}
 	}
-	return result
+	return models.Response{
+		Status:  models.ResponseStatus.OK,
+		Data: results,
+		Message: "Success",
+	}
 }
