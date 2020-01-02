@@ -133,13 +133,13 @@ func LoginAPI(w http.ResponseWriter, r *http.Request) {
 
 	var input models.User
 	err := json.NewDecoder(r.Body).Decode(&input)
-
+	sessionToken := r.Header.Get("Authorization")
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid json query")
 		return
 	}
 	//Convert string to int64
-	results := action.Login(input)
+	results := action.Login(input, sessionToken)
 	enableCors(&w)
 	if results.Status == models.ResponseStatus.ERROR {
 		respondWithJson(w, http.StatusOK, results)
