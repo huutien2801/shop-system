@@ -51,7 +51,7 @@ func FindAllHistoryAPI(w http.ResponseWriter, r *http.Request) {
 	offset, _ := strconv.ParseInt(offsetStr, 0, 64)
 	results := action.FindAllHistory(input, limit, offset)
 
-	if results == nil {
+	if results.Status == models.ResponseStatus.ERROR {
 		respondWithError(w, http.StatusBadRequest, "No document is match with your query")
 		return
 	} else {
@@ -69,7 +69,7 @@ func CreateHistoryAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		insertItem := action.CreateHistory(history)
-		if insertItem == nil {
+		if insertItem.Status == models.ResponseStatus.ERROR {
 			respondWithError(w, http.StatusBadRequest, "Create History failed")
 		} else {
 			respondWithJson(w, http.StatusOK, insertItem)
@@ -87,7 +87,7 @@ func DeleteHistoryAPI(w http.ResponseWriter, r *http.Request) {
 
 	id := keys[0]
 	deleteItem := action.DeleteHistory(id)
-	if deleteItem == nil {
+	if deleteItem.Status == models.ResponseStatus.ERROR {
 		respondWithError(w, http.StatusBadRequest, "Delete History failed")
 	} else {
 		respondWithJson(w, http.StatusOK, deleteItem)
