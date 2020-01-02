@@ -114,7 +114,7 @@ func CreateUser(newUser models.User) models.Response {
 //DeleteUser function
 func DeleteUser(id string) models.Response {
 	objectID, _ := primitive.ObjectIDFromHex(id)
-	
+
 	deleteResult, err := models.UserDB.Collection.DeleteOne(context.TODO(), bson.M{"_id": objectID})
 	if err != nil {
 		return models.Response{
@@ -131,11 +131,23 @@ func DeleteUser(id string) models.Response {
 }
 
 //UpdateUser function
-func UpdateUser(id string, newUpdater models.User) models.Response {
+func UpdateUser(id string, newUpdater models.User, sessionToken string) models.Response {
 
-	objectID, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.M{
-		"_id": objectID,
+	filter := bson.M{}
+	if id != "" {
+		objectID, _ := primitive.ObjectIDFromHex(id)
+		filter = bson.M{
+			"_id": objectID,
+		}
+	}
+
+	if sessionToken != "" {
+		item, found := models.UserCache.Get(sessionToken)
+		if found {
+			filter = bson.M{
+				"username": item,
+			}
+		}
 	}
 
 	bsonUpdate := bson.M{}
