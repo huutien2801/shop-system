@@ -97,6 +97,7 @@ func CreateUser(newUser models.User) models.Response {
 		}
 	}
 	newUser.Password = string(hashedPassword)
+	newUser.Avatar = "https://cdn1.vectorstock.com/i/1000x1000/19/45/user-avatar-icon-sign-symbol-vector-4001945.jpg"
 
 	insertResult, err := models.UserDB.Collection.InsertOne(context.TODO(), newUser)
 	if err != nil {
@@ -243,9 +244,10 @@ func Login(input models.User) models.Response {
 	}
 
 	models.UserCache.Set(sessionToken.String(), result.Username, cache.DefaultExpiration)
+	result.Session = sessionToken.String()
 
 	return models.Response{
-		Data:   sessionToken.String(),
+		Data:   result,
 		Status: models.ResponseStatus.OK,
 	}
 }
