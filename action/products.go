@@ -3,8 +3,6 @@ package action
 import (
 	"context"
 
-	"log"
-
 	"github.com/huutien2801/shop-system/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -94,7 +92,7 @@ func CreateProduct(newProduct models.Product) models.Response {
 	}
 }
 
-func DeleteProduct(id string) *mongo.DeleteResult {
+func DeleteProduct(id string) models.Response {
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	deleteResult, err := models.ProductDB.Collection.DeleteOne(context.TODO(), bson.M{"_id": objectId})
 	if err != nil {
