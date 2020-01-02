@@ -8,7 +8,7 @@ import (
 
 	"encoding/json"
 	"net/http"
-
+	"time"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strconv"
 )
@@ -49,7 +49,7 @@ func FindAllPromotionAPI(w http.ResponseWriter, r *http.Request) {
 	offset, _ := strconv.ParseInt(offsetStr, 0, 64)
 	results := action.FindAllPromotion(input, limit, offset)
 
-	if results == nil {
+	if results.Status == models.ResponseStatus.ERROR {
 		respondWithError(w, http.StatusBadRequest, "No document is match with your query")
 		return
 	} else {
@@ -60,13 +60,14 @@ func FindAllPromotionAPI(w http.ResponseWriter, r *http.Request) {
 func CreatePromotionAPI(w http.ResponseWriter, r *http.Request) {
 	var promotion models.Promotion
 	promotion.ID = primitive.NewObjectID()
+	*promotion.CreatedTime = time.Now()
 	err := json.NewDecoder(r.Body).Decode(&promotion)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	} else {
 		insertItem := action.CreatePromotion(promotion)
-		if insertItem == nil {
+		if insertItem.Status == models.ResponseStatus.ERROR {
 			respondWithError(w, http.StatusBadRequest, "Create Promotion failed")
 		} else {
 			respondWithJson(w, http.StatusOK, insertItem)
@@ -84,7 +85,7 @@ func DeletePromotionAPI(w http.ResponseWriter, r *http.Request) {
 
 	id := keys[0]
 	deleteItem := action.DeletePromotion(id)
-	if deleteItem == nil {
+	if deleteItem.Status == models.ResponseStatus.ERROR {
 		respondWithError(w, http.StatusBadRequest, "Delete Promotion failed")
 	} else {
 		respondWithJson(w, http.StatusOK, deleteItem)
