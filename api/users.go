@@ -48,7 +48,7 @@ func FindAllUserAPI(w http.ResponseWriter, r *http.Request) {
 	limit, _ := strconv.ParseInt(limitStr, 0, 64)
 	offset, _ := strconv.ParseInt(offsetStr, 0, 64)
 	results := action.FindAllUser(input, limit, offset)
-
+	enableCors(&w)
 	if results.Status == models.ResponseStatus.ERROR {
 		respondWithJson(w, http.StatusOK, results)
 		return
@@ -61,6 +61,7 @@ func CreateUserAPI(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	user.ID = primitive.NewObjectID()
 	err := json.NewDecoder(r.Body).Decode(&user)
+	enableCors(&w)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
@@ -85,6 +86,7 @@ func DeleteUserAPI(w http.ResponseWriter, r *http.Request) {
 
 	id := keys[0]
 	deleteItem := action.DeleteUser(id)
+	enableCors(&w)
 	if deleteItem.Status == models.ResponseStatus.ERROR {
 		respondWithJson(w, http.StatusOK, deleteItem)
 	} else {
@@ -103,6 +105,7 @@ func UpdateUserAPI(w http.ResponseWriter, r *http.Request) {
 	id := keys[0]
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
+	enableCors(&w)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
@@ -121,7 +124,7 @@ func FindOneUserAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	id := keys[0]
-
+	enableCors(&w)
 	result := action.FindOneUser(id)
 	respondWithJson(w, http.StatusOK, result)
 }
@@ -137,7 +140,7 @@ func LoginAPI(w http.ResponseWriter, r *http.Request) {
 	}
 	//Convert string to int64
 	results := action.Login(input)
-
+	enableCors(&w)
 	if results.Status == models.ResponseStatus.ERROR {
 		respondWithJson(w, http.StatusOK, results)
 		return
@@ -151,7 +154,7 @@ func LogoutAPI(w http.ResponseWriter, r *http.Request) {
 	sessionToken := r.Header.Get("Authorization")
 	//Convert string to int64
 	results := action.Logout(sessionToken)
-
+	enableCors(&w)
 	if results.Status == models.ResponseStatus.ERROR {
 		respondWithJson(w, http.StatusOK, results)
 		return

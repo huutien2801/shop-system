@@ -19,6 +19,7 @@ type User struct {
 	UserRole    string             `json:"userRole" bson:"user_role"`
 	Email       string             `json:"email" bson:"email"`
 	Avatar      string             `json:"avatar" bson:"avatar"`
+	Session     string             `json:"session" bson:"session"`
 }
 
 type AddressDetailEnum struct {
