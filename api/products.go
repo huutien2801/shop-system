@@ -2,7 +2,7 @@ package api
 
 import (
 	"log"
-
+	"time"
 	"github.com/huutien2801/shop-system/action"
 	"github.com/huutien2801/shop-system/models"
 
@@ -50,7 +50,7 @@ func FindAllProductAPI(w http.ResponseWriter, r *http.Request) {
 	results := action.FindAllProduct(input, limit, offset)
 
 	enableCors(&w)
-	if results == nil {
+	if results.Status == models.ResponseStatus.ERROR {
 		respondWithError(w, http.StatusBadRequest, "No document is match with your query")
 		return
 	} else {
@@ -68,7 +68,7 @@ func CreateProductAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		insertItem := action.CreateProduct(product)
-		if insertItem == nil {
+		if insertItem.Status == models.ResponseStatus.ERROR {
 			respondWithError(w, http.StatusBadRequest, "Create product failed")
 		} else {
 			respondWithJson(w, http.StatusOK, insertItem)
@@ -86,7 +86,7 @@ func DeleteProductAPI(w http.ResponseWriter, r *http.Request) {
 
 	id := keys[0]
 	deleteItem := action.DeleteProduct(id)
-	if deleteItem == nil {
+	if deleteItem.Status == models.ResponseStatus.ERROR {
 		respondWithError(w, http.StatusBadRequest, "Delete product failed")
 	} else {
 		respondWithJson(w, http.StatusOK, deleteItem)
