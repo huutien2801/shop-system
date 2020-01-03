@@ -24,6 +24,12 @@ func FindAllProduct(input models.ClientProductInput, limit int64, offset int64) 
 	if input.Status != "" {
 		filter["status"] = input.Status
 	}
+	if input.CategoryCode != "" {
+		filter["category_code"] = input.CategoryCode
+	}
+	if input.CategoryName != "" {
+		filter["category_name"] = input.CategoryName
+	}
 
 	if input.ActionFilter != "" {
 		if input.ActionFilter == models.ActionType.PRICE_ASC {
