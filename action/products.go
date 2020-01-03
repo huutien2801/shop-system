@@ -32,6 +32,12 @@ func FindAllProduct(input models.ClientProductInput, limit int64, offset int64) 
 		if input.ActionFilter == models.ActionType.PRICE_DESC {
 			findOptions.SetSort(bson.M{"price": -1})
 		}
+		if input.ActionFilter == models.ActionType.TIME_ASC {
+			findOptions.SetSort(bson.M{"created_time": 1})
+		}
+		if input.ActionFilter == models.ActionType.TIME_DESC {
+			findOptions.SetSort(bson.M{"created_time": -1})
+		}
 		//TODO: Sort by time
 	}
 
@@ -71,7 +77,7 @@ func FindAllProduct(input models.ClientProductInput, limit int64, offset int64) 
 	cur.Close(context.TODO())
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
-		Data: results,
+		Data:    results,
 		Message: "Success",
 	}
 }
@@ -87,7 +93,7 @@ func CreateProduct(newProduct models.Product) models.Response {
 	}
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
-		Data: insertResult,
+		Data:    insertResult,
 		Message: "Success",
 	}
 }
@@ -103,7 +109,7 @@ func DeleteProduct(id string) models.Response {
 	}
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
-		Data: deleteResult,
+		Data:    deleteResult,
 		Message: "Success",
 	}
 	// fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
@@ -120,10 +126,22 @@ func UpdateProduct(id string, newUpdater models.Product) models.Response {
 	if newUpdater.Name != "" {
 		bsonUpdate["name"] = newUpdater.Name
 	}
-
 	if newUpdater.Price != 0 {
 		bsonUpdate["price"] = newUpdater.Price
 	}
+	if newUpdater.Discount != 0 {
+		bsonUpdate["discount"] = newUpdater.Price
+	}
+	if newUpdater.Description != "" {
+		bsonUpdate["description"] = newUpdater.Description
+	}
+	if newUpdater.ImageURL != "" {
+		bsonUpdate["image_url"] = newUpdater.ImageURL
+	}
+	if newUpdater.ImageName != "" {
+		bsonUpdate["image_name"] = newUpdater.ImageName
+	}
+
 	update := bson.M{
 		"$set": bsonUpdate,
 	}
@@ -137,7 +155,7 @@ func UpdateProduct(id string, newUpdater models.Product) models.Response {
 	}
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
-		Data: updateResult,
+		Data:    updateResult,
 		Message: "Success",
 	}
 }
@@ -157,7 +175,7 @@ func FindOneProduct(id string) models.Response {
 	}
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
-		Data: result,
+		Data:    result,
 		Message: "Success",
 	}
 }

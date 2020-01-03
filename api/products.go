@@ -1,10 +1,10 @@
 package api
 
 import (
-	"log"
-	"time"
 	"github.com/huutien2801/shop-system/action"
 	"github.com/huutien2801/shop-system/models"
+	"log"
+	"time"
 
 	"encoding/json"
 	"net/http"
@@ -61,7 +61,8 @@ func FindAllProductAPI(w http.ResponseWriter, r *http.Request) {
 func CreateProductAPI(w http.ResponseWriter, r *http.Request) {
 	var product models.Product
 	product.ID = primitive.NewObjectID()
-	*product.CreatedTime = time.Now()
+	now := time.Now()
+	product.CreatedTime = &now
 	err := json.NewDecoder(r.Body).Decode(&product)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
