@@ -22,18 +22,19 @@ type Charity struct {
 
 type Sponsor struct {
 	UserName string `json:"userName" bson:"user_name"`
-	UserID   string `json:"userID" bson:"user_id"`
 	Price    int32  `json:"price" bson:"price"`
 }
 
 type CharityStatusEnum struct {
-	START    string
-	FINISHED string
+	ACTIVE   string
+	EXPIRED  string
+	INACTIVE string
 }
 
 var CharityStatus = CharityStatusEnum{
-	START:    "START",
-	FINISHED: "FINISHED",
+	ACTIVE:   "ACTIVE",
+	EXPIRED:  "EXPIRED",
+	INACTIVE: "INACTIVE",
 }
 
 var CharityDB = DbModel{
