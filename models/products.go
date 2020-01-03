@@ -15,6 +15,7 @@ type Product struct {
 	Status       string             `json:"status" bson:"status"`
 	ImageURL     string             `json:"imageUrl" bson:"image_url"`
 	ImageName    string             `json:"imageName" bson:"image_name"`
+	ImageArray   []string           `json:"imageArray" bson:"image_aray"`
 	Size         []string           `json:"size" bson:"size"`
 	ColorName    []string           `json:"colorName" bson:"color_name"`
 	ColorCode    []string           `json:"colorCode" bson:"color_code"`
