@@ -2,12 +2,12 @@ package api
 
 import (
 	"encoding/json"
-	"log"
-	"net/http"
-	"time"
 	"github.com/huutien2801/shop-system/action"
 	"github.com/huutien2801/shop-system/models"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"log"
+	"net/http"
+	"time"
 )
 
 func FindAllCategoriesAPI(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +23,8 @@ func FindAllCategoriesAPI(w http.ResponseWriter, r *http.Request) {
 func CreateCategoryAPI(w http.ResponseWriter, r *http.Request) {
 	var category models.Category
 	category.ID = primitive.NewObjectID()
-	*category.CreatedTime = time.Now()
+	now := time.Now()
+	category.CreatedTime = &now
 	err := json.NewDecoder(r.Body).Decode(&category)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
