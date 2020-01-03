@@ -29,7 +29,11 @@ type ClientProductInput struct {
 	Status       string             `json:"status" bson:"status"`
 	ImageURL     string             `json:"imageUrl" bson:"image_url"`
 	ImageName    string             `json:"imageName" bson:"image_name"`
+	CategoryCode string             `json:"categoryCode" bson:"category_code"`
+	CategoryName string             `json:"categoryName" bson:"category_name"`
+	SelledAmount int32              `json:"selledAmount" bson:"selled_amount"`
 	ActionFilter string             `json:"actionFilter" bson:"action_filter"`
+	CreatedTime  *time.Time         `json:"createdTime" bson:"created_time"`
 }
 
 type ActionEnum struct {
