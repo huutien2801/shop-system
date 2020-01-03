@@ -98,6 +98,12 @@ func main() {
 	r.HandleFunc("/promotion", api.DeletePromotionAPI).Methods("DELETE")
 	r.HandleFunc("/promotion", api.CreatePromotionAPI).Methods("POST")
 	r.HandleFunc("/promotion", api.UpdatePromotionAPI).Methods("PUT")
+	//API for order
+	r.HandleFunc("/order", api.FindAllOrderAPI).Methods("GET")
+	r.HandleFunc("/order/find-one", api.FindOneOrderAPI).Methods("GET")
+	r.HandleFunc("/order", api.DeleteOrderAPI).Methods("DELETE")
+	r.HandleFunc("/order", api.CreateOrderAPI).Methods("POST")
+	r.HandleFunc("/order", api.UpdateOrderAPI).Methods("PUT")
 	//API for history-trip
 	//TODO
 	port := os.Getenv("PORT")
