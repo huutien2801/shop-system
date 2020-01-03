@@ -38,6 +38,9 @@ func FindAllProduct(input models.ClientProductInput, limit int64, offset int64) 
 		if input.ActionFilter == models.ActionType.TIME_DESC {
 			findOptions.SetSort(bson.M{"created_time": -1})
 		}
+		if input.ActionFilter == models.ActionType.TOP_SELLER {
+			findOptions.SetSort(bson.M{"selled_amount": -1})
+		}
 		//TODO: Sort by time
 	}
 
@@ -131,6 +134,9 @@ func UpdateProduct(id string, newUpdater models.Product) models.Response {
 	}
 	if newUpdater.Discount != 0 {
 		bsonUpdate["discount"] = newUpdater.Price
+	}
+	if newUpdater.SelledAmount != 0 {
+		bsonUpdate["selled_amount"] = newUpdater.SelledAmount
 	}
 	if newUpdater.Description != "" {
 		bsonUpdate["description"] = newUpdater.Description
