@@ -62,7 +62,8 @@ func FindAllOrderAPI(w http.ResponseWriter, r *http.Request) {
 func CreateOrderAPI(w http.ResponseWriter, r *http.Request) {
 	var order models.Order
 	order.ID = primitive.NewObjectID()
-	*order.CreatedTime = time.Now()
+	now := time.Now()
+	order.CreatedTime = &now
 	err := json.NewDecoder(r.Body).Decode(&order)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
@@ -89,7 +90,7 @@ func DeleteOrderAPI(w http.ResponseWriter, r *http.Request) {
 	deleteItem := action.DeleteOrder(id)
 	if deleteItem.Status == models.ResponseStatus.ERROR {
 		respondWithError(w, http.StatusBadRequest, "Delete order failed")
-	}else{
+	} else {
 		respondWithJson(w, http.StatusOK, deleteItem)
 	}
 }

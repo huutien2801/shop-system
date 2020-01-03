@@ -9,7 +9,8 @@ import (
 
 type HistoryDelivery struct {
 	ID          primitive.ObjectID `json:"id" bson:"_id"`
-	UserID      string             `json:"userID" bson:"user_id"`
+	UserName    string             `json:"username" bson:"username"`
+	Shipper     string             `json:"shipper" bson:"shipper"`
 	PickTime    *time.Time         `json:"pickTime" bson:"pick_time"`
 	DeliverTime *time.Time         `json:"deliverTime" bson:"deliver_time"`
 	Status      string             `json:"status" bson:"status"`

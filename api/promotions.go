@@ -7,10 +7,10 @@ import (
 	"github.com/huutien2801/shop-system/models"
 
 	"encoding/json"
-	"net/http"
-	"time"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"net/http"
 	"strconv"
+	"time"
 )
 
 func FindAllPromotionAPI(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +60,8 @@ func FindAllPromotionAPI(w http.ResponseWriter, r *http.Request) {
 func CreatePromotionAPI(w http.ResponseWriter, r *http.Request) {
 	var promotion models.Promotion
 	promotion.ID = primitive.NewObjectID()
-	*promotion.CreatedTime = time.Now()
+	now := time.Now()
+	promotion.CreatedTime = &now
 	err := json.NewDecoder(r.Body).Decode(&promotion)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())

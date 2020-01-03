@@ -60,7 +60,8 @@ func FindAllUserAPI(w http.ResponseWriter, r *http.Request) {
 func CreateUserAPI(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	user.ID = primitive.NewObjectID()
-	*user.CreatedTime = time.Now()
+	now := time.Now()
+	user.CreatedTime = &now
 	err := json.NewDecoder(r.Body).Decode(&user)
 	enableCors(&w)
 	if err != nil {

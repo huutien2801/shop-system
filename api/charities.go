@@ -61,7 +61,8 @@ func FindAllCharityAPI(w http.ResponseWriter, r *http.Request) {
 func CreateCharityAPI(w http.ResponseWriter, r *http.Request) {
 	var charity models.Charity
 	charity.ID = primitive.NewObjectID()
-	*charity.CreatedTime = time.Now()
+	now := time.Now()
+	charity.CreatedTime = &now
 	err := json.NewDecoder(r.Body).Decode(&charity)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())

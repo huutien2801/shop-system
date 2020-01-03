@@ -16,6 +16,7 @@ type Order struct {
 	DeliverTime    *time.Time         `json:"deliverTime" bson:"deliver_time"`
 	UserID         string             `json:"userID" bson:"user_id"`
 	UserName       string             `json:"userName" bson:"user_name"`
+	Shipper        string             `json:"shipper" bson:"shipper"`
 	Status         string             `json:"status" bson:"status"`
 	DeliverAddress string             `json:"deliverAddress" bson:"deliver_address"`
 	CreatedTime    *time.Time         `json:"createdTime" bson:"created_time"`
