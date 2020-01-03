@@ -17,6 +17,7 @@ type Product struct {
 	ImageName    string             `json:"imageName" bson:"image_name"`
 	CategoryCode string             `json:"categoryCode" bson:"category_code"`
 	CategoryName string             `json:"categoryName" bson:"category_name"`
+	SelledAmount int32              `json:"selledAmount" bson:"selled_amount"`
 	CreatedTime  *time.Time         `json:"createdTime" bson:"created_time"`
 }
 
@@ -36,6 +37,7 @@ type ActionEnum struct {
 	PRICE_DESC string
 	TIME_ASC   string
 	TIME_DESC  string
+	TOP_SELLER string
 }
 
 var ActionType = ActionEnum{
@@ -43,6 +45,7 @@ var ActionType = ActionEnum{
 	PRICE_DESC: "PRICE_DESC",
 	TIME_ASC:   "TIME_ASC",
 	TIME_DESC:  "TIME_DESC",
+	TOP_SELLER: "TOP_SELLER",
 }
 
 var ProductDB = DbModel{
