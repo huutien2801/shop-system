@@ -14,6 +14,7 @@ type Product struct {
 	Description  string             `json:"description" bson:"description"`
 	Status       string             `json:"status" bson:"status"`
 	ImageURL     string             `json:"imageUrl" bson:"image_url"`
+	Quantity     int32              `json:"quantity" bson:"quantity"`
 	ImageName    string             `json:"imageName" bson:"image_name"`
 	ImageArray   []string           `json:"imageArray" bson:"image_aray"`
 	Size         []string           `json:"size" bson:"size"`
@@ -33,6 +34,7 @@ type ClientProductInput struct {
 	Price        int32              `json:"price" bson:"price"`
 	Description  string             `json:"description" bson:"description"`
 	Status       string             `json:"status" bson:"status"`
+	Quantity     int32              `json:"quantity" bson:"quantity"`
 	ImageURL     string             `json:"imageUrl" bson:"image_url"`
 	ImageName    string             `json:"imageName" bson:"image_name"`
 	CategoryCode string             `json:"categoryCode" bson:"category_code"`
@@ -48,6 +50,8 @@ type ActionEnum struct {
 	TIME_ASC   string
 	TIME_DESC  string
 	TOP_SELLER string
+	SELLING    string
+	SOLDOUT    string
 }
 
 var ActionType = ActionEnum{
@@ -56,6 +60,8 @@ var ActionType = ActionEnum{
 	TIME_ASC:   "TIME_ASC",
 	TIME_DESC:  "TIME_DESC",
 	TOP_SELLER: "TOP_SELLER",
+	SELLING:    "SELLING",
+	SOLDOUT:    "SOLD_OUT",
 }
 
 var ProductDB = DbModel{

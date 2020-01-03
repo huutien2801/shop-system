@@ -47,6 +47,12 @@ func FindAllProduct(input models.ClientProductInput, limit int64, offset int64) 
 		if input.ActionFilter == models.ActionType.TOP_SELLER {
 			findOptions.SetSort(bson.M{"selled_amount": -1})
 		}
+		if input.ActionFilter == models.ActionType.SELLING {
+			filter["quantity"] = bson.M{"$gt": 0}
+		}
+		if input.ActionFilter == models.ActionType.SOLDOUT {
+			filter["quantity"] = bson.M{"$eq": 0}
+		}
 		//TODO: Sort by time
 	}
 
@@ -152,6 +158,9 @@ func UpdateProduct(id string, newUpdater models.Product) models.Response {
 	}
 	if newUpdater.ImageName != "" {
 		bsonUpdate["image_name"] = newUpdater.ImageName
+	}
+	if newUpdater.Quantity != 0 {
+		bsonUpdate["quantity"] = newUpdater.Quantity
 	}
 
 	update := bson.M{
