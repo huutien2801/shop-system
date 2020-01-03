@@ -3,7 +3,6 @@ package action
 import (
 	"context"
 
-
 	"github.com/huutien2801/shop-system/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -24,10 +23,12 @@ func FindAllHistory(input models.HistoryDelivery, limit int64, offset int64) mod
 	if input.Status != "" {
 		filter["status"] = input.Status
 	}
-	if input.UserID != "" {
-		filter["user_id"] = input.UserID
+	if input.UserName != "" {
+		filter["user_id"] = input.UserName
 	}
-
+	if input.Shipper != "" {
+		filter["shipper"] = input.Shipper
+	}
 	var results []*models.HistoryDelivery
 	cur, err := models.HistoryDeliveryDB.Collection.Find(context.TODO(), filter, findOptions)
 	if err != nil {
@@ -45,9 +46,9 @@ func FindAllHistory(input models.HistoryDelivery, limit int64, offset int64) mod
 		err := cur.Decode(&elem)
 		if err != nil {
 			return models.Response{
-			Status:  models.ResponseStatus.ERROR,
-			Message: err.Error(),
-		}
+				Status:  models.ResponseStatus.ERROR,
+				Message: err.Error(),
+			}
 		}
 
 		results = append(results, &elem)
@@ -65,7 +66,7 @@ func FindAllHistory(input models.HistoryDelivery, limit int64, offset int64) mod
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
 		Message: "Success",
-		Data: results,
+		Data:    results,
 	}
 }
 
@@ -81,7 +82,7 @@ func CreateHistory(newHistory models.HistoryDelivery) models.Response {
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
 		Message: "Success",
-		Data: insertResult,
+		Data:    insertResult,
 	}
 }
 
@@ -97,7 +98,7 @@ func DeleteHistory(id string) models.Response {
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
 		Message: "Success",
-		Data: deleteResult,
+		Data:    deleteResult,
 	}
 	// fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
 }
@@ -147,6 +148,6 @@ func FindOneHistory(id string) models.Response {
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
 		Message: "Success",
-		Data: result,
+		Data:    result,
 	}
 }
