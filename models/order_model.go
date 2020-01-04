@@ -29,11 +29,12 @@ type ProductDetail struct {
 	Description  string `json:"description" bson:"description"`
 	Status       string `json:"status" bson:"status"`
 	Quantity     int32  `json:"quantity" bson:"quantity"`
-	ImageArray   string `json:"imageArray" bson:"image_aray"`
+	ImageUrl     string `json:"imageUrl" bson:"image_url"`
 	Size         string `json:"size" bson:"size"`
 	ColorName    string `json:"colorName" bson:"color_name"`
 	Material     string `json:"material" bson:"material"`
 	CategoryName string `json:"categoryName" bson:"category_name"`
+	Amount       int32  `json:"amount" bson:"amount"`
 }
 
 type OrderStatusEnum struct {
