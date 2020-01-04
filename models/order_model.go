@@ -10,7 +10,8 @@ import (
 type Order struct {
 	ID             primitive.ObjectID `json:"id" bson:"_id"`
 	OrderCode      string             `json:"orderCode" bson:"order_code"`
-	Products       *ProductDetail     `json:"products" bson:"products"`
+	PhoneNumber    string             `json:"phoneNumber" bson:"phone_number"`
+	Products       []ProductDetail    `json:"products" bson:"products"`
 	TotalPrice     int32              `json:"totalPrice" bson:"total_price"`
 	PurchaseTime   *time.Time         `json:"purchaseDate" bson:"purchase_date"`
 	DeliverTime    *time.Time         `json:"deliverTime" bson:"deliver_time"`
