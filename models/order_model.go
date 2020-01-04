@@ -47,6 +47,7 @@ type OrderStatusEnum struct {
 	DELIVERING string //Tài xế đang giao
 	PICKING    string //Tài xê đang lấy hàng
 	RETURNING  string //Tài xế đang trả hàng
+	CANCLE     string //Hủy đơn
 }
 
 var OrderStatus = OrderStatusEnum{
@@ -58,6 +59,7 @@ var OrderStatus = OrderStatusEnum{
 	DELIVERING: "DELIVERING",
 	PICKING:    "PICKING",
 	RETURNING:  "RETURNING",
+	CANCLE:     "CANCLE",
 }
 
 var OrderDB = DbModel{

@@ -146,6 +146,10 @@ func UpdateOrder(id string, newUpdater models.Order) models.Response {
 		bsonUpdate["product"] = newUpdater.Products
 	}
 
+	if newUpdater.Status != "" {
+		bsonUpdate["status"] = newUpdater.Status
+	}
+
 	update := bson.M{
 		"$set": bsonUpdate,
 	}
