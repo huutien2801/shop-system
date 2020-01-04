@@ -23,8 +23,17 @@ type Order struct {
 }
 
 type ProductDetail struct {
-	ProductCode string `json:"productCode" bson:"product_code"`
-	Amount      int    `json:"amount" bson:"amount"`
+	Name         string `json:"name" bson:"name"`
+	Price        int32  `json:"price" bson:"price"`
+	Discount     int32  `json:"discount" bson:"discount"`
+	Description  string `json:"description" bson:"description"`
+	Status       string `json:"status" bson:"status"`
+	Quantity     int32  `json:"quantity" bson:"quantity"`
+	ImageArray   string `json:"imageArray" bson:"image_aray"`
+	Size         string `json:"size" bson:"size"`
+	ColorName    string `json:"colorName" bson:"color_name"`
+	Material     string `json:"material" bson:"material"`
+	CategoryName string `json:"categoryName" bson:"category_name"`
 }
 
 type OrderStatusEnum struct {

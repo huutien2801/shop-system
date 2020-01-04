@@ -3,7 +3,6 @@ package action
 import (
 	"context"
 
-
 	"github.com/huutien2801/shop-system/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -83,7 +82,7 @@ func FindAllOrder(input models.Order, limit int64, offset int64) models.Response
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
 		Message: "Success",
-		Data: results,
+		Data:    results,
 	}
 }
 
@@ -99,7 +98,7 @@ func CreateOrder(newOrder models.Order) models.Response {
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
 		Message: "Success",
-		Data: insertResult,
+		Data:    insertResult,
 	}
 }
 
@@ -115,7 +114,7 @@ func DeleteOrder(id string) models.Response {
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
 		Message: "Success",
-		Data: deleteResult,
+		Data:    deleteResult,
 	}
 	// fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
 }
@@ -139,10 +138,14 @@ func UpdateOrder(id string, newUpdater models.Order) models.Response {
 	if newUpdater.DeliverTime != nil {
 		bsonUpdate["deliver_time"] = newUpdater.DeliverTime
 	}
+	if newUpdater.Shipper != "" {
+		bsonUpdate["shipper"] = newUpdater.Shipper
+	}
 
 	if newUpdater.Products != nil {
 		bsonUpdate["product"] = newUpdater.Products
 	}
+
 	update := bson.M{
 		"$set": bsonUpdate,
 	}
@@ -157,7 +160,7 @@ func UpdateOrder(id string, newUpdater models.Order) models.Response {
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
 		Message: "Success",
-		Data: updateResult,
+		Data:    updateResult,
 	}
 }
 
@@ -177,6 +180,6 @@ func FindOneOrder(id string) models.Response {
 	return models.Response{
 		Status:  models.ResponseStatus.OK,
 		Message: "Success",
-		Data: result,
+		Data:    result,
 	}
 }
